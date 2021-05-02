@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import serial
 import ambient
 import time
@@ -26,7 +28,7 @@ while 1:
         row = str(timestamp) + "," + str(temp) + \
             "," + str(humid) + "," + str(raw)
     else:
-        row = str(timestamp) + "0.0,0.0," + str(raw)
+        row = str(timestamp) + "," + "0.0,0.0," + "," + str(raw)
     f.write(row + "\n")
     f.close()
     time.sleep(conf["interval"])
