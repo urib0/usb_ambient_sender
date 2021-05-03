@@ -25,7 +25,7 @@ while 1:
         humid = int(line[1].split("=")[1]) / 100
         res = a.send({"d1": temp, "d2": humid}, timeout=60)
         row = str(timestamp) + "," + str(temp) + \
-            "," + str(humid) + "," + str(raw)
+            "," + str(humid) + "," + str(raw) + "," + str(res.status_code)
         f = open(conf["logdir"] + "/" + filename + ".csv", mode="a")
         f.write(row + "\n")
         f.close()
