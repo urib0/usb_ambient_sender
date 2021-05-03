@@ -10,7 +10,7 @@ f = open("./config.json", "r")
 conf = json.loads(f.read())
 f.close()
 
-a = ambient.Ambient(33580, conf["ambient_key_write"])
+a = ambient.Ambient(conf["ambient_channel"], conf["ambient_key_write"])
 
 while 1:
     filename = datetime.datetime.now().strftime("%Y-%m-%d")
