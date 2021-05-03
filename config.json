@@ -1,6 +1,7 @@
 {
     "serial_port": "/dev/hoge",
     "serial_rate": 9600,
+    "ambient_chanel": 12345,
     "ambient_key_write": "hoge",
     "logdir": "./hoge",
     "interval": 300
