@@ -1,0 +1,7 @@
+ambient @ git+https://github.com/AmbientDataInc/ambient-python-lib.git@6d44fd998727387301e4729d3fa282e2fc20a2ca
+certifi==2021.5.30
+chardet==4.0.0
+idna==2.10
+pyserial==3.5
+requests==2.25.1
+urllib3==1.26.5
