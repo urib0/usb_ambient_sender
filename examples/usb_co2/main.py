@@ -25,7 +25,7 @@ def main():
     while True:
         # Read serial port
         try:
-            readSer = serial.Serial(SERIAL_PORT, SERIAL_RATE, timeout=3)
+            readSer = serial.Serial(SERIAL_PORT, SERIAL_RATE, timeout=30)
         except serial.serialutil.SerialException as e:
             print(e, file=sys.stderr)
         raw = readSer.readline().decode()
@@ -35,7 +35,7 @@ def main():
         co2 = int(re.match(r'co2=([0-9]+);', raw).groups()[0])
         data = {"d1": co2}
         try:
-            res = am.send(data, timeout=10)
+            res = am.send(data, timeout=30)
             res.raise_for_status()
         except requests.exceptions.RequestException as e:
             print(e, file=sys.stderr)
