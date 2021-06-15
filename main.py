@@ -5,6 +5,7 @@ import ambient
 import time
 import json
 import datetime
+import random
 
 f = open("./config.json", "r")
 conf = json.loads(f.read())
@@ -24,6 +25,9 @@ while 1:
         temp = int(line[0].split("=")[1]) / 100
         humid = int(line[1].split("=")[1]) / 100
         res = a.send({"d1": temp, "d2": humid}, timeout=60)
+        if 200 != res.status_code:
+            time.sleep(random.randint(1, 10))
+            res = a.send({"d1": temp, "d2": humid}, timeout=60)
         row = str(timestamp) + "," + str(temp) + \
             "," + str(humid) + "," + str(raw) + "," + str(res.status_code)
         f = open(conf["logdir"] + "/" + filename + ".csv", mode="a")
