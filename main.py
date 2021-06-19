@@ -21,21 +21,16 @@ while 1:
     raw = readSer.readline().decode().replace('\n', '')
     readSer.close()
     line = raw.split(";")
-    if line[0].split("=")[1].isdecimal():
-        temp = int(line[0].split("=")[1]) / 100
-        humid = int(line[1].split("=")[1]) / 100
+
+    temp = int(line[0].split("=")[1]) / 100
+    humid = int(line[1].split("=")[1]) / 100
+    res = a.send({"d1": temp, "d2": humid}, timeout=60)
+    if 200 != res.status_code:
+        time.sleep(random.randint(1, 10))
         res = a.send({"d1": temp, "d2": humid}, timeout=60)
-        if 200 != res.status_code:
-            time.sleep(random.randint(1, 10))
-            res = a.send({"d1": temp, "d2": humid}, timeout=60)
-        row = str(timestamp) + "," + str(temp) + \
-            "," + str(humid) + "," + str(raw) + "," + str(res.status_code)
-        f = open(conf["logdir"] + "/" + filename + ".csv", mode="a")
-        f.write(row + "\n")
-        f.close()
-    else:
-        row = str(timestamp) + "," + "0.0,0.0," + "," + str(raw)
-        f = open(conf["logdir"] + "/err_" + filename + ".csv", mode="a")
-        f.write(row + "\n")
-        f.close()
+    row = str(timestamp) + "," + str(temp) + \
+        "," + str(humid) + "," + str(raw) + "," + str(res.status_code)
+    f = open(conf["logdir"] + "/" + filename + ".csv", mode="a")
+    f.write(row + "\n")
+    f.close()
     time.sleep(conf["interval"])
