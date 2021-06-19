@@ -1,8 +1,25 @@
 {
-    "serial_port": "/dev/hoge",
-    "serial_rate": 9600,
     "ambient_channel": 12345,
     "ambient_key_write": "hoge",
-    "logdir": "./hoge",
-    "interval": 300
+    "logdir": "./log",
+    "interval": 300,
+    "devices": [
+        {
+            "sensor_name": "hoge",
+            "serial_port": "/dev/hoge",
+            "serial_rate": 9600,
+            "sensors": [
+                "d1",
+                "d2"
+            ]
+        },
+        {
+            "sensor_name": "hoge",
+            "serial_port": "/dev/hoge",
+            "serial_rate": 9600,
+            "sensors": [
+                "d3"
+            ]
+        }
+    ]
 }
