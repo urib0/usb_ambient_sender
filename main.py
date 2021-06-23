@@ -9,7 +9,7 @@ import datetime
 import random
 import os
 
-DEBUG = True
+DEBUG = False
 
 
 def logging(name, data):
