@@ -1,7 +1,7 @@
 {
     "ambient_channel": 12345,
     "ambient_key_write": "hoge",
-    "logdir": "./log",
+    "logdir": "log",
     "interval": 300,
     "devices": [
         {
@@ -14,11 +14,19 @@
             ]
         },
         {
-            "sensor_name": "hoge",
-            "serial_port": "/dev/hoge",
+            "sensor_name": "piyo",
+            "serial_port": "/dev/piyo",
             "serial_rate": 9600,
             "sensors": [
                 "d3"
+            ]
+        },
+        {
+            "sensor_name": "huga",
+            "serial_port": "/dev/huga",
+            "serial_rate": 9600,
+            "sensors": [
+                "d4"
             ]
         }
     ]
