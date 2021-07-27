@@ -8,6 +8,7 @@ import json
 import datetime
 import random
 import os
+import subprocess
 
 DEBUG = False
 
@@ -44,20 +45,28 @@ am = ambient.Ambient(conf["ambient_channel"], conf["ambient_key_write"])
 while 1:
     data_dic = {}
     for i in conf["devices"]:
-        # シリアル読み込み
-        readSer = serial.Serial(i["serial_port"], i["serial_rate"], timeout=3)
-        raw = readSer.readline().decode().replace('\n', '')
-        readSer.close()
-
-        # データ整形
         data_arr = []
-        for j in range(len(i["sensors"])):
-            d = conv(raw.split(";")[j])
-            data_dic[i["sensors"][j]] = d
-            data_arr.append(str(d))
+        if "cpu_temp" == i["sensor_name"]:
+            cmd = 'cat /sys/class/thermal/thermal_zone0/temp'
+            data = int((subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                         shell=True).communicate()[0]).decode('utf-8').split("\n")[0])/1000.0
+            data_arr.append(str(data))
+            data_dic[i["sensors"][0]] = data
+        else:
+            # シリアル読み込み
+            readSer = serial.Serial(
+                i["serial_port"], i["serial_rate"], timeout=3)
+            raw = readSer.readline().decode().replace('\n', '')
+            readSer.close()
+
+            # データ整形
+            for j in range(len(i["sensors"])):
+                d = conv(raw.split(";")[j])
+                data_dic[i["sensors"][j]] = d
+                data_arr.append(str(d))
+            data_arr.append(raw)
 
         # ログファイル出力
-        data_arr.append(raw)
         logging(i["sensor_name"], ",".join(data_arr))
 
     # ambient送信処理

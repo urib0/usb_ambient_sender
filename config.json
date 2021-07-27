@@ -22,11 +22,17 @@
             ]
         },
         {
-            "sensor_name": "huga",
-            "serial_port": "/dev/huga",
+            "sensor_name": "fuga",
+            "serial_port": "/dev/fuga",
             "serial_rate": 9600,
             "sensors": [
                 "d4"
+            ]
+        },
+        {
+            "sensor_name": "hogera",
+            "sensors": [
+                "d5"
             ]
         }
     ]
