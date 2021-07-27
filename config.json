@@ -30,7 +30,7 @@
             ]
         },
         {
-            "sensor_name": "hogera",
+            "sensor_name": "cpu_temp",
             "sensors": [
                 "d5"
             ]
