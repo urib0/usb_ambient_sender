@@ -70,10 +70,11 @@ while 1:
         logging(i["sensor_name"], ",".join(data_arr))
 
     # ambient送信処理
-    res = am.send(data_dic, timeout=60)
-    if 200 != res.status_code:
-        time.sleep(random.randint(1, 10))
-        res = am.send(data_dic, timeout=60)
+    try:
+        res = am.send(data, timeout=10)
+        print('sent to Ambient (ret = %d)' % res.status_code)
+    except requests.exceptions.RequestException as e:
+        print('request failed: ', e)
 
     # 送信周期待ち
     time.sleep(conf["interval"])
