@@ -71,7 +71,7 @@ while 1:
 
     # ambient送信処理
     try:
-        res = am.send(data, timeout=10)
+        res = am.send(data_dic, timeout=10)
         print('sent to Ambient (ret = %d)' % res.status_code)
     except requests.exceptions.RequestException as e:
         print('request failed: ', e)
