@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  sender:
+    build: .
+    tty: true
+    devices:
+    - "/dev/ttyACM0:/dev/ttyUSB"
+    environment:
+    - SERIAL_RATE=9600
+    - AMBIENT_CHANNEL=XXXXXXX
+    - AMBIENT_KEY_WRITE=XXXXXXXXXXXX
+    - INTERVAL=300
+    - SERIAL_PORT=/dev/ttyUSB
