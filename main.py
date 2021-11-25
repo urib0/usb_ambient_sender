@@ -42,39 +42,35 @@ f.close()
 
 am = ambient.Ambient(conf["ambient_channel"], conf["ambient_key_write"])
 
-while 1:
-    data_dic = {}
-    for i in conf["devices"]:
-        data_arr = []
-        if "cpu_temp" == i["sensor_name"]:
-            cmd = 'cat /sys/class/thermal/thermal_zone0/temp'
-            data = int((subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                                         shell=True).communicate()[0]).decode('utf-8').split("\n")[0])/1000.0
-            data_arr.append(str(data))
-            data_dic[i["sensors"][0]] = data
-        else:
-            # シリアル読み込み
-            readSer = serial.Serial(
-                i["serial_port"], i["serial_rate"], timeout=3)
-            raw = readSer.readline().decode().replace('\n', '')
-            readSer.close()
+data_dic = {}
+for i in conf["devices"]:
+    data_arr = []
+    if "cpu_temp" == i["sensor_name"]:
+        cmd = 'cat /sys/class/thermal/thermal_zone0/temp'
+        data = int((subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                        shell=True).communicate()[0]).decode('utf-8').split("\n")[0])/1000.0
+        data_arr.append(str(data))
+        data_dic[i["sensors"][0]] = data
+    else:
+        # シリアル読み込み
+        readSer = serial.Serial(
+            i["serial_port"], i["serial_rate"], timeout=3)
+        raw = readSer.readline().decode().replace('\n', '')
+        readSer.close()
 
-            # データ整形
-            for j in range(len(i["sensors"])):
-                d = conv(raw.split(";")[j])
-                data_dic[i["sensors"][j]] = d
-                data_arr.append(str(d))
-            data_arr.append(raw)
+        # データ整形
+        for j in range(len(i["sensors"])):
+            d = conv(raw.split(";")[j])
+            data_dic[i["sensors"][j]] = d
+            data_arr.append(str(d))
+        data_arr.append(raw)
 
-        # ログファイル出力
-        logging(i["sensor_name"], ",".join(data_arr))
+    # ログファイル出力
+    logging(i["sensor_name"], ",".join(data_arr))
 
-    # ambient送信処理
-    try:
-        res = am.send(data_dic, timeout=10)
-        print('sent to Ambient (ret = %d)' % res.status_code)
-    except requests.exceptions.RequestException as e:
-        print('request failed: ', e)
-
-    # 送信周期待ち
-    time.sleep(conf["interval"])
+# ambient送信処理
+try:
+    res = am.send(data_dic, timeout=10)
+    print('sent to Ambient (ret = %d)' % res.status_code)
+except requests.exceptions.RequestException as e:
+    print('request failed: ', e)
