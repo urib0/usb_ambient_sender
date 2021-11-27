@@ -6,15 +6,21 @@ USBシリーズのデータをambientに送るやつ
 
   選択肢はLocal only→mail nameは適当
 
-  `sudo apt install -y postfix`
+  ```
+  sudo apt install -y postfix
+  ```
+
+- crontabのログ出力を有効化
+
+  `/etc/rsyslog.conf`の以下のコメントアウトを外す
+
+  ```
+  cron.*                          /var/log/cron.log
+  ```
 
 - crontabの設定
 
-  ```
-  crontab -e
-  ```
-
-  下記を追加
+  `crontab -e`で下記を追加
 
   ```
   */5 * * * * python3 /home/pi/work/usb_ambient_sender/main.py
