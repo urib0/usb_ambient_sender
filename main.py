@@ -17,7 +17,7 @@ def logging(name, data):
     filename = name + "_" + datetime.datetime.now().strftime("%Y-%m-%d") + ".csv"
     timestamp = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     write_str = timestamp + "," + data
-    path = "./" + conf["logdir"] + "/" + name + "/"
+    path = "/home/pi/work/usb_ambient_sender/" + conf["logdir"] + "/" + name + "/"
 
     if DEBUG:
         print(write_str)
@@ -36,7 +36,7 @@ def conv(data):
 
 
 # 設定値読み込み
-f = open("./config.json", "r")
+f = open("/home/pi/work/usb_ambient_sender/config.json", "r")
 conf = json.loads(f.read())
 f.close()
 
