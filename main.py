@@ -11,7 +11,7 @@ import os
 import subprocess
 
 DEBUG = False
-
+REPETITIONS = 3
 
 def logging(name, data):
     filename = name + "_" + datetime.datetime.now().strftime("%Y-%m-%d") + ".csv"
@@ -69,8 +69,11 @@ for i in conf["devices"]:
     logging(i["sensor_name"], ",".join(data_arr))
 
 # ambient送信処理
-try:
-    res = am.send(data_dic, timeout=10)
-    print('sent to Ambient (ret = %d)' % res.status_code)
-except requests.exceptions.RequestException as e:
-    print('request failed: ', e)
+for i in range(REPETITIONS):
+    try:
+        res = am.send(data_dic, timeout=10)
+        print('sent to Ambient (ret = %d)' % res.status_code)
+        if res.status_code == 200:
+            break
+    except requests.exceptions.RequestException as e:
+        print('request failed: ', e)
