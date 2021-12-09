@@ -9,9 +9,11 @@ import datetime
 import random
 import os
 import subprocess
+import requests
 
 DEBUG = False
 REPETITIONS = 3
+THRESHOLD = 2000
 
 def logging(name, data):
     filename = name + "_" + datetime.datetime.now().strftime("%Y-%m-%d") + ".csv"
@@ -58,6 +60,15 @@ for i in conf["devices"]:
         raw = readSer.readline().decode().replace('\n', '')
         readSer.close()
 
+        print(int(raw.split(";")[0].split("=")[1]))
+        if i["sensor_name"] == "th" and (int(raw.split(";")[0].split("=")[1]) > THRESHOLD ):
+            url99 = "https://notify-api.line.me/api/notify"
+            token = 'hoge'
+            message  = '部屋の情報\n'
+            message += '温度:'+str(int(raw.split(";")[0].split("=")[1])/100)+'℃'
+            payload = {'message' : message}
+            headers = {'Authorization' : 'Bearer '+ token,}
+            r = requests.post(url99,data=payload,headers=headers)
         # データ整形
         for j in range(len(i["sensors"])):
             d = conv(raw.split(";")[j])
