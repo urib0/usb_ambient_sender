@@ -2,6 +2,11 @@
 USBシリーズのデータをambientに送るやつ
 
 # 導入手順
+- ambientモジュールの追加
+  ```
+  pip3 install git+https://github.com/AmbientDataInc/ambient-python-lib.git
+  ```
+
 - postfixの追加
 
   選択肢はLocal only→mail nameは適当
