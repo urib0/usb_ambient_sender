@@ -65,7 +65,13 @@ for i in conf["devices"]:
             url99 = "https://notify-api.line.me/api/notify"
             token = 'hoge'
             message  = '部屋の情報\n'
-            message += '温度:'+str(int(raw.split(";")[0].split("=")[1])/100)+'℃'
+            message += '温度が20℃を超えました\n'
+            message += '温度:'+str(int(raw.split(";")[0].split("=")[1])/100)+'℃\n'
+            message += '湿度:60%\n'
+            message += 'CO2:620ppm\n'
+            message += 'UV:6\n'
+            message += 'LUX:3\n'
+            message += 'TEMP:40.2℃'
             payload = {'message' : message}
             headers = {'Authorization' : 'Bearer '+ token,}
             r = requests.post(url99,data=payload,headers=headers)
