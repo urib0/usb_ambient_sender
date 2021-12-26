@@ -2,7 +2,6 @@
     "ambient_channel": 12345,
     "ambient_key_write": "hoge",
     "logdir": "log",
-    "interval": 300,
     "devices": [
         {
             "sensor_name": "hoge",
