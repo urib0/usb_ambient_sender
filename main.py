@@ -29,26 +29,26 @@ f.close()
 am = ambient.Ambient(conf["ambient_channel"], conf["ambient_key_write"])
 
 data_dic = {}
-for i in conf["devices"]:
+for device in conf["devices"]:
     data_arr = []
-    if "cpu_temp" == i["sensor_name"]:
+    if "cpu_temp" == device["sensor_name"]:
         cmd = 'cat /sys/class/thermal/thermal_zone0/temp'
         data = int((subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                         shell=True).communicate()[0]).decode('utf-8').split("\n")[0])/1000.0
         data_arr.append(str(data))
-        data_dic[i["sensors"][0]] = data
+        data_dic[device["sensors"][0]] = data
     else:
         # シリアル読み込み
         readSer = serial.Serial(
-            i["serial_port"], i["serial_rate"], timeout=3)
+            device["serial_port"], device["serial_rate"], timeout=3)
         raw = readSer.readline().decode().replace('\n', '')
         readSer.close()
 
         print(int(raw.split(";")[0].split("=")[1]))
         # データ整形
-        for j in range(len(i["sensors"])):
+        for j in range(len(device["sensors"])):
             d = conv(raw.split(";")[j])
-            data_dic[i["sensors"][j]] = d
+            data_dic[device["sensors"][j]] = d
             data_arr.append(str(d))
         data_arr.append(raw)
 
