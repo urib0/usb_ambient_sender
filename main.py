@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # python3.7で動作確認済み
 
-import serial
 import ambient
 import time
 import json
@@ -48,23 +47,6 @@ for device in conf["devices"]:
             print(lines)
         except Exception as e:
             pass
-        
-
-
-        
-        # シリアル読み込み
-        readSer = serial.Serial(
-            device["serial_port"], device["serial_rate"], timeout=3)
-        raw = readSer.readline().decode().replace('\n', '')
-        readSer.close()
-
-        print(int(raw.split(";")[0].split("=")[1]))
-        # データ整形
-        for j in range(len(device["sensors"])):
-            d = conv(raw.split(";")[j])
-            data_dic[device["sensors"][j]] = d
-            data_arr.append(str(d))
-        data_arr.append(raw)
 
 # ambient送信処理
 for i in range(REPETITIONS):
