@@ -67,9 +67,10 @@ for device in conf["devices"]:
 # ambient送信処理
 for i in range(REPETITIONS):
     try:
-        res = am.send(data_dic, timeout=10)
+        res = am.send(data_dic, timeout=3)
         print('sent to Ambient (ret = %d)' % res.status_code)
         if res.status_code == 200:
             break
+        time.sleep(random.randint(1,10))
     except requests.exceptions.RequestException as e:
         print('request failed: ', e)
