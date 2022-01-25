@@ -15,10 +15,10 @@ DEBUG = False
 REPETITIONS = 3
 
 def conv(data):
-    if data.split("=")[0] in {"temp", "hum"}:
-        return int(data.split("=")[1]) / 100
+    if data[0] in {"temp", "hum"}:
+        return int(data[1]) / 100
     else:
-        return int(data.split("=")[1])
+        return int(data[1])
 
 
 # 設定値読み込み
@@ -39,13 +39,11 @@ for device in conf["devices"]:
         data_dic[device["sensors"][0]] = data
     else:
         filename = conf["logdir"] + "/" + device["sensor_name"] + "/" + device["sensor_name"] + "_" + dt.datetime.now().strftime("%Y-%m-%d") + ".csv"
-        print(filename)
         try:
             f = open(filename,"r")
             # ログの末尾1行をとってくる
             lines = f.readlines()[-1:][0][:-1]
             f.close
-            print(lines)
 
             # ログに含まれるセンサの数がconfig.jsonと同じか確認
             data_list = lines.split(",")[1].split(";")
@@ -53,7 +51,13 @@ for device in conf["devices"]:
             if len(device["sensors"]) == data_num:
                 for i in range(data_num):
                     # センサ名と数字のペアができる ex) ["temp","2657"]
-                    print(data_list[i].split("="))
+                    data_pair = data_list[i].split("=")
+
+                    if data_pair[0] in device["sensors"]:
+                        # 送信すべきambientのデータ番号が存在することを確認 ex) d1~d8
+                        print(data_pair[0] + ":" + str(conv(data_pair)))
+                    else:
+                        break
             else:
                 break
         except Exception as e:
