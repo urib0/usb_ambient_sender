@@ -56,6 +56,7 @@ for device in conf["devices"]:
                     if data_pair[0] in device["sensors"]:
                         # 送信すべきambientのデータ番号が存在することを確認 ex) d1~d8
                         print(data_pair[0] + ":" + str(conv(data_pair)))
+                        data_dic[device["sensors"][data_pair[0]]] = conv(data_pair)
                     else:
                         break
             else:
