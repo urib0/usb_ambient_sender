@@ -5,7 +5,8 @@ import serial
 import ambient
 import time
 import json
-import datetime
+import datetime as dt
+import sys
 import random
 import os
 import subprocess
@@ -38,6 +39,19 @@ for device in conf["devices"]:
         data_arr.append(str(data))
         data_dic[device["sensors"][0]] = data
     else:
+        filename = conf["logdir"] + "/" + device["sensor_name"] + "/" + device["sensor_name"] + "_" + dt.datetime.now().strftime("%Y-%m-%d") + ".csv"
+        print(filename)
+        try:
+            f = open(filename,"r")
+            lines = f.readlines()[-1:][0][:-1]
+            f.close
+            print(lines)
+        except Exception as e:
+            pass
+        
+
+
+        
         # シリアル読み込み
         readSer = serial.Serial(
             device["serial_port"], device["serial_rate"], timeout=3)
