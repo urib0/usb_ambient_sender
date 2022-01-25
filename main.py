@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # python3.7で動作確認済み
 
-import serial
 import ambient
 import time
 import json
-import datetime
+import datetime as dt
+import sys
 import random
 import os
 import subprocess
@@ -13,28 +13,12 @@ import requests
 
 DEBUG = False
 REPETITIONS = 3
-THRESHOLD = 2000
-
-def logging(name, data):
-    filename = name + "_" + datetime.datetime.now().strftime("%Y-%m-%d") + ".csv"
-    timestamp = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-    write_str = timestamp + "," + data
-    path = "/home/pi/work/usb_ambient_sender/" + conf["logdir"] + "/" + name + "/"
-
-    if DEBUG:
-        print(write_str)
-
-    os.makedirs(path, exist_ok=True)
-    f = open(path + filename, mode="a")
-    f.write(write_str + "\n")
-    f.close()
-
 
 def conv(data):
-    if data.split("=")[0] in {"temp", "hum"}:
-        return int(data.split("=")[1]) / 100
+    if data[0] in {"temp", "hum"}:
+        return int(data[1]) / 100
     else:
-        return int(data.split("=")[1])
+        return int(data[1])
 
 
 # 設定値読み込み
@@ -45,52 +29,48 @@ f.close()
 am = ambient.Ambient(conf["ambient_channel"], conf["ambient_key_write"])
 
 data_dic = {}
-for i in conf["devices"]:
+for device in conf["devices"]:
     data_arr = []
-    if "cpu_temp" == i["sensor_name"]:
+    if "cpu_temp" == device["sensor_name"]:
         cmd = 'cat /sys/class/thermal/thermal_zone0/temp'
         data = int((subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                         shell=True).communicate()[0]).decode('utf-8').split("\n")[0])/1000.0
         data_arr.append(str(data))
-        data_dic[i["sensors"][0]] = data
+        data_dic[device["sensors"][0]] = data
     else:
-        # シリアル読み込み
-        readSer = serial.Serial(
-            i["serial_port"], i["serial_rate"], timeout=3)
-        raw = readSer.readline().decode().replace('\n', '')
-        readSer.close()
+        filename = conf["logdir"] + "/" + device["sensor_name"] + "/" + device["sensor_name"] + "_" + dt.datetime.now().strftime("%Y-%m-%d") + ".csv"
+        try:
+            f = open(filename,"r")
+            # ログの末尾1行をとってくる
+            lines = f.readlines()[-1:][0][:-1]
+            f.close
 
-        print(int(raw.split(";")[0].split("=")[1]))
-        if i["sensor_name"] == "th" and (int(raw.split(";")[0].split("=")[1]) > THRESHOLD ):
-            url99 = "https://notify-api.line.me/api/notify"
-            token = 'hoge'
-            message  = '部屋の情報\n'
-            message += '温度が20℃を超えました\n'
-            message += '温度:'+str(int(raw.split(";")[0].split("=")[1])/100)+'℃\n'
-            message += '湿度:60%\n'
-            message += 'CO2:620ppm\n'
-            message += 'UV:6\n'
-            message += 'LUX:3\n'
-            message += 'TEMP:40.2℃'
-            payload = {'message' : message}
-            headers = {'Authorization' : 'Bearer '+ token,}
-            r = requests.post(url99,data=payload,headers=headers)
-        # データ整形
-        for j in range(len(i["sensors"])):
-            d = conv(raw.split(";")[j])
-            data_dic[i["sensors"][j]] = d
-            data_arr.append(str(d))
-        data_arr.append(raw)
+            # ログに含まれるセンサの数がconfig.jsonと同じか確認
+            data_list = lines.split(",")[1].split(";")
+            data_num = (len(data_list) - 1)
+            if len(device["sensors"]) == data_num:
+                for i in range(data_num):
+                    # センサ名と数字のペアができる ex) ["temp","2657"]
+                    data_pair = data_list[i].split("=")
 
-    # ログファイル出力
-    logging(i["sensor_name"], ",".join(data_arr))
+                    if data_pair[0] in device["sensors"]:
+                        # 送信すべきambientのデータ番号が存在することを確認 ex) d1~d8
+                        print(data_pair[0] + ":" + str(conv(data_pair)))
+                        data_dic[device["sensors"][data_pair[0]]] = conv(data_pair)
+                    else:
+                        break
+            else:
+                break
+        except Exception as e:
+            pass
 
 # ambient送信処理
 for i in range(REPETITIONS):
     try:
-        res = am.send(data_dic, timeout=10)
+        res = am.send(data_dic, timeout=3)
         print('sent to Ambient (ret = %d)' % res.status_code)
         if res.status_code == 200:
             break
+        time.sleep(random.randint(1,10))
     except requests.exceptions.RequestException as e:
         print('request failed: ', e)
