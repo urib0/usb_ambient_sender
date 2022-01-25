@@ -1,32 +1,20 @@
 {
     "ambient_channel": 12345,
     "ambient_key_write": "hoge",
-    "logdir": "log",
+    "logdir": "/home/pi/work/log/log_usb",
     "devices": [
         {
-            "sensor_name": "hoge",
-            "serial_port": "/dev/hoge",
-            "serial_rate": 9600,
-            "sensors": [
-                "d1",
-                "d2"
-            ]
+            "sensor_name": "temp_hum",
+            "sensors": {
+                "temp": "d1",
+                "hum": "d2"
+            }
         },
         {
-            "sensor_name": "piyo",
-            "serial_port": "/dev/piyo",
-            "serial_rate": 9600,
-            "sensors": [
-                "d3"
-            ]
-        },
-        {
-            "sensor_name": "fuga",
-            "serial_port": "/dev/fuga",
-            "serial_rate": 9600,
-            "sensors": [
-                "d4"
-            ]
+            "sensor_name": "co2",
+            "sensors": {
+                "co2": "d3"
+            }
         },
         {
             "sensor_name": "cpu_temp",
