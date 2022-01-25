@@ -42,9 +42,20 @@ for device in conf["devices"]:
         print(filename)
         try:
             f = open(filename,"r")
+            # ログの末尾1行をとってくる
             lines = f.readlines()[-1:][0][:-1]
             f.close
             print(lines)
+
+            # ログに含まれるセンサの数がconfig.jsonと同じか確認
+            data_list = lines.split(",")[1].split(";")
+            data_num = (len(data_list) - 1)
+            if len(device["sensors"]) == data_num:
+                for i in range(data_num):
+                    # センサ名と数字のペアができる ex) ["temp","2657"]
+                    print(data_list[i].split("="))
+            else:
+                break
         except Exception as e:
             pass
 
