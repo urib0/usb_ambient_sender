@@ -14,21 +14,6 @@ import requests
 DEBUG = False
 REPETITIONS = 3
 
-def logging(name, data):
-    filename = name + "_" + datetime.datetime.now().strftime("%Y-%m-%d") + ".csv"
-    timestamp = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-    write_str = timestamp + "," + data
-    path = "/home/pi/work/usb_ambient_sender/" + conf["logdir"] + "/" + name + "/"
-
-    if DEBUG:
-        print(write_str)
-
-    os.makedirs(path, exist_ok=True)
-    f = open(path + filename, mode="a")
-    f.write(write_str + "\n")
-    f.close()
-
-
 def conv(data):
     if data.split("=")[0] in {"temp", "hum"}:
         return int(data.split("=")[1]) / 100
@@ -66,9 +51,6 @@ for i in conf["devices"]:
             data_dic[i["sensors"][j]] = d
             data_arr.append(str(d))
         data_arr.append(raw)
-
-    # ログファイル出力
-    logging(i["sensor_name"], ",".join(data_arr))
 
 # ambient送信処理
 for i in range(REPETITIONS):
