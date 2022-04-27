@@ -15,10 +15,8 @@ DEBUG = False
 REPETITIONS = 3
 
 def conv(data):
-    if data[0] in {"temp"}:
+    if data[0] in {"temp","hum"}:
         return int(data[1]) / 100
-    elif data[0] in {"hum"}:
-        return int(data[1]) / 102.4
     else:
         return int(data[1])
 
