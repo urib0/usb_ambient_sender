@@ -48,20 +48,17 @@ for device in conf["devices"]:
             # ログに含まれるセンサの数がconfig.jsonと同じか確認
             data_list = lines.split(",")[1].split(";")
             data_num = (len(data_list) - 1)
-            if len(device["sensors"]) == data_num:
-                for i in range(data_num):
-                    # センサ名と数字のペアができる ex) ["temp","2657"]
-                    data_pair = data_list[i].split("=")
+            for i in range(data_num):
+                # センサ名と数字のペアができる ex) ["temp","2657"]
+                data_pair = data_list[i].split("=")
 
-                    if data_pair[0] in device["sensors"]:
-                        # 送信すべきambientのデータ番号が存在することを確認 ex) d1~d8
-                        print(data_pair[0] + ":" + str(conv(data_pair)))
-                        data_dic[device["sensors"][data_pair[0]]] = conv(data_pair)
-                    else:
-                        break
-            else:
-                break
+                if data_pair[0] in device["sensors"]:
+                    # 送信すべきambientのデータ番号が存在することを確認 ex) d1~d8
+                    data_dic[device["sensors"][data_pair[0]]] = conv(data_pair)
+                else:
+                    break
         except Exception as e:
+            print(e)
             pass
 
 # ambient送信処理
